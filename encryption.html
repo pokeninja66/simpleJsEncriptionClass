@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Encription Test</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: rgb(238, 174, 202);
+        background: radial-gradient(circle, rgba(238, 174, 202, 0.6418942577030813) 0%, rgba(148, 187, 233, 0.8379726890756303) 100%);
+    }
+
+    .container {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
+        grid-template-columns: 1fr;
+        grid-template-rows: 100vh;
+    }
+
+    .item-main {
+        display: grid;
+        grid-gap: 20px;
+    }
+
+    input,
+    textarea {
+        min-height: 35px;
+        min-width: 350px;
+        text-indent: 10px;
+        border-radius: 10px;
+        border: 1px solid #001630;
+    }
+
+
+    .btn {
+        text-align: center;
+        background-color: #001630;
+        border-radius: 10px;
+        cursor: pointer;
+        color: whitesmoke;
+        padding: 10px;
+    }
+</style>
+
+<body>
+    <div class="container">
+
+        <div class="item-main">
+            <label for="hashText">Enter text</label>
+            <input id="hashText" type="text">
+            <a class="btn">Encript</a>
+            <Label for="normalHash">Normal hash</Label>
+            <textarea id="normalHash" rows="3"></textarea>
+            <Label for="randomHash">Random hash</Label>
+            <textarea id="randomHash" rows="3"></textarea>
+        </div>
+
+    </div>
+
+    <script>
+        class hashTextAlgo {
+
+            maxLenght = 20;//128+;
+
+            hash(str) {
+
+                //console.log(str.length);
+
+                const hashChunks = this.chunkSubstr(str, this.maxLenght);
+                //console.log(hashChunks);
+                let result = "";
+
+                hashChunks.forEach(item => {
+                    //console.log(item);
+
+                    // get char array and change char codes
+                    let charsArr = this.getCharCodes(item).map(c => Math.abs(c - 17));
+                    // get the sum of all char codes
+                    let charArrNum = charsArr.reduce((a, b) => a + b, 0);
+                    //console.log(charArrNum);
+                    // if the item is less than the maxLenght we pad it
+                    if (item.length !== this.maxLenght) {
+                        // set random padding code
+                        for (let i = 1; i < this.maxLenght - item.length; i++) {
+
+                            if (charArrNum > 18) {
+                                charArrNum -= 17;
+                                charsArr.push(charArrNum);
+
+                            } else {
+                                charArrNum += 11;
+                                charsArr.push(charArrNum);
+                            }
+
+                        }
+
+                        //item = item.padEnd(this.maxLenght, "*");
+                        //console.log("padded: ", item);
+                    }
+
+                    //console.log(charsArr);
+                    // join the resulting hash
+                    //console.log(charsArr.map(n => ("0" + Number(n).toString(16)).substr(-2)));
+                    result += charsArr.map(c => String.fromCharCode(c)).join("");
+                    //console.log(result);
+
+                });
+                return result;
+            }
+
+            hashRandom(str) {
+                const hashChunks = this.chunkSubstr(str, this.maxLenght);
+                let result = "";
+                hashChunks.forEach(item => {
+                    //console.log(item);
+                    // if the item is less than the maxLenght we pad it
+                    if (item.length !== this.maxLenght) {
+                        item = item.padEnd(this.maxLenght, this.setRandomPad());
+
+                    }
+                    // get char array and change char codes
+                    const charsArr = this.getCharCodes(item).map(c => Math.abs(c - 17));
+                    //console.log(charsArr);
+                    // join the resulting hash
+                    result += charsArr.map(c => String.fromCharCode(c)).join("");
+                    //console.log(result);
+
+                });
+                return result;
+            }
+
+            // set chunks
+            chunkSubstr(str, size) {
+                const numChunks = Math.ceil(str.length / size)
+                const chunks = new Array(numChunks)
+
+                for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
+                    chunks[i] = str.substr(o, size)
+                }
+
+                return chunks
+            }
+            // get item character codes
+            getCharCodes(str) {
+                return str.split('').map(c => c.charCodeAt(0));
+            }
+            // return random character padding
+            setRandomPad() {
+                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+=-';
+                const charactersLength = characters.length;
+                return characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+        }
+
+
+        document.querySelector(".btn").addEventListener("click", (e) => {
+            const input = document.querySelector("input").value.trim();
+            const hashT = new hashTextAlgo();
+
+            document.querySelector("#normalHash").value = hashT.hash(input);
+            document.querySelector("#randomHash").value = hashT.hashRandom(input);
+        });
+    </script>
+</body>
+
+</html>
