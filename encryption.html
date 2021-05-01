@@ -129,8 +129,12 @@
                     //console.log(item);
                     // if the item is less than the maxLenght we pad it
                     if (item.length !== this.maxLenght) {
-                        item = item.padEnd(this.maxLenght, this.setRandomPad());
-
+                        let paddString = "";
+                        for (let i = 1; i < this.maxLenght - item.length; i++) {
+                            paddString += this.setRandomPad();
+                        }
+                        //console.log(paddString);
+                        item += paddString;
                     }
                     // get char array and change char codes
                     const charsArr = this.getCharCodes(item).map(c => Math.abs(c - 17));
@@ -145,14 +149,14 @@
 
             // set chunks
             chunkSubstr(str, size) {
-                const numChunks = Math.ceil(str.length / size)
-                const chunks = new Array(numChunks)
+                const numChunks = Math.ceil(str.length / size);
+                const chunks = new Array(numChunks);
 
                 for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
-                    chunks[i] = str.substr(o, size)
+                    chunks[i] = str.substr(o, size);
                 }
 
-                return chunks
+                return chunks;
             }
             // get item character codes
             getCharCodes(str) {
