@@ -62,7 +62,7 @@
         <div class="item-main">
             <label for="hashText">Enter text</label>
             <input id="hashText" type="text">
-            <a class="btn">Encript</a>
+            <a class="btn">Encrypt</a>
             <Label for="normalHash">Normal hash</Label>
             <textarea id="normalHash" rows="3"></textarea>
             <Label for="randomHash">Random hash</Label>
@@ -77,21 +77,13 @@
             maxLenght = 20;//128+;
 
             hash(str) {
-
-                //console.log(str.length);
-
                 const hashChunks = this.chunkSubstr(str, this.maxLenght);
-                //console.log(hashChunks);
                 let result = "";
-
                 hashChunks.forEach(item => {
-                    //console.log(item);
-
                     // get char array and change char codes
                     let charsArr = this.getCharCodes(item).map(c => Math.abs(c - 17));
                     // get the sum of all char codes
                     let charArrNum = charsArr.reduce((a, b) => a + b, 0);
-                    //console.log(charArrNum);
                     // if the item is less than the maxLenght we pad it
                     if (item.length !== this.maxLenght) {
                         // set random padding code
@@ -107,17 +99,10 @@
                             }
 
                         }
-
-                        //item = item.padEnd(this.maxLenght, "*");
-                        //console.log("padded: ", item);
                     }
 
-                    //console.log(charsArr);
                     // join the resulting hash
-                    //console.log(charsArr.map(n => ("0" + Number(n).toString(16)).substr(-2)));
                     result += charsArr.map(c => String.fromCharCode(c)).join("");
-                    //console.log(result);
-
                 });
                 return result;
             }
@@ -126,23 +111,18 @@
                 const hashChunks = this.chunkSubstr(str, this.maxLenght);
                 let result = "";
                 hashChunks.forEach(item => {
-                    //console.log(item);
                     // if the item is less than the maxLenght we pad it
                     if (item.length !== this.maxLenght) {
                         let paddString = "";
                         for (let i = 1; i < this.maxLenght - item.length; i++) {
                             paddString += this.setRandomPad();
                         }
-                        //console.log(paddString);
                         item += paddString;
                     }
                     // get char array and change char codes
                     const charsArr = this.getCharCodes(item).map(c => Math.abs(c - 17));
-                    //console.log(charsArr);
                     // join the resulting hash
                     result += charsArr.map(c => String.fromCharCode(c)).join("");
-                    //console.log(result);
-
                 });
                 return result;
             }
